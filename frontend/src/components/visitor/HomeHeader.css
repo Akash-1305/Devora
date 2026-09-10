@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+nav{
+    padding-left: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    height: 10vh;
+    box-shadow: 10px 10px 10px 10px rgba(10, 10, 10, 0.5);
+}
+
+.logo{
+    padding: 15px;
+}
+
+.btn{
+    width: auto;
+    padding: 10px;
+    margin-top: 80vh;
+    margin-left: 95vw;
+}
+
+.link{
+    text-decoration: none;
+
+}
