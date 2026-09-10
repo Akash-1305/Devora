@@ -8,6 +8,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 def register():
     data = request.get_json() or {}
     name = (data.get('name') or '').strip()
+    mobileno = (data.get('mobileno').strip()
     password = data.get('password') or ''
     if not name or not password:
         return jsonify({'error': 'Name and password are required.'}), 400
