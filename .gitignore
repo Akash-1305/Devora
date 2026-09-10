@@ -1,0 +1,4 @@
+# MongoDB data
+.mongo/
+mongodb/
+data/db/.mongo/
