@@ -6,12 +6,10 @@ export default function HomeHeader() {
       <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
         <div className="container">
 
-          {/* Logo */}
           <Link className="navbar-brand" to="/">
             <h1 className="logo mb-0">Jeevan Seva</h1>
           </Link>
 
-          {/* Mobile Toggle */}
           <button
             className="navbar-toggler"
             type="button"
@@ -24,7 +22,6 @@ export default function HomeHeader() {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          {/* Navigation Links */}
           <div
             className="collapse navbar-collapse justify-content-end"
             id="homeNavbar"
@@ -64,8 +61,6 @@ export default function HomeHeader() {
 
         </div>
       </nav>
-
-      {/* Page Content */}
       <Outlet />
     </>
   );

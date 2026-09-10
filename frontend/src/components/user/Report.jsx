@@ -76,7 +76,11 @@ export default function Report() {
       return;
     }
 
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+    ];
 
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, JPEG and PNG images are allowed.");
@@ -120,7 +124,7 @@ export default function Report() {
 
     try {
       const response = await axios.post(
-        baseUrl + "/api/reports",
+        `${baseUrl}/api/reports`,
         formData,
         {
           headers: {
@@ -129,7 +133,8 @@ export default function Report() {
         }
       );
 
-      alert(response.data.message);
+      alert(response.data.message || "Report submitted successfully.");
+
       clearFields();
       getReports();
     } catch (error) {
@@ -157,7 +162,9 @@ export default function Report() {
         `${baseUrl}/api/reports?userid=${userid}`
       );
 
-      setReportList(response.data.reports || response.data || []);
+      setReportList(
+        response.data.reports || response.data || []
+      );
     } catch (error) {
       console.log("Error fetching reports:", error);
     }
@@ -169,8 +176,8 @@ export default function Report() {
     setLocation("");
     setLatitude("");
     setLongitude("");
-    setWard("01");
-    setCity("Mysuru");
+    setWard("");
+    setCity("");
     setImage(null);
     setImagePreview("");
 
@@ -185,14 +192,17 @@ export default function Report() {
     switch (status) {
       case "Registered":
         return "bg-primary";
+
       case "Assigned":
         return "bg-info text-dark";
+
       case "Started":
         return "bg-warning text-dark";
+
       case "Completed":
-        return "bg-success";
       case "Verified":
         return "bg-success";
+
       default:
         return "bg-secondary";
     }
@@ -203,6 +213,7 @@ export default function Report() {
       <div className="card shadow-sm mb-5">
         <div className="card-header bg-success text-white">
           <h2 className="mb-0">Report a Civic Issue</h2>
+
           <small>
             Help us identify and resolve problems in your area.
           </small>
@@ -220,7 +231,7 @@ export default function Report() {
               onChange={(e) => setIssueName(e.target.value)}
               required
             >
-              <option value="">
+              <option value="" hidden>
                 --- Select Problem Type ---
               </option>
 
@@ -241,7 +252,7 @@ export default function Report() {
               onChange={(e) => setCategory(e.target.value)}
               required
             >
-              <option value="">
+              <option value="" hidden>
                 --- Select Category ---
               </option>
 
@@ -286,7 +297,9 @@ export default function Report() {
                   step="any"
                   className="form-control mb-3"
                   value={latitude}
-                  onChange={(e) => setLatitude(e.target.value)}
+                  onChange={(e) =>
+                    setLatitude(e.target.value)
+                  }
                   placeholder="Latitude"
                   required
                 />
@@ -302,7 +315,9 @@ export default function Report() {
                   step="any"
                   className="form-control mb-3"
                   value={longitude}
-                  onChange={(e) => setLongitude(e.target.value)}
+                  onChange={(e) =>
+                    setLongitude(e.target.value)
+                  }
                   placeholder="Longitude"
                   required
                 />
@@ -335,6 +350,7 @@ export default function Report() {
                   className="form-control mb-3"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  placeholder="City"
                   required
                 />
               </Col>
@@ -391,112 +407,6 @@ export default function Report() {
           </form>
         </div>
       </div>
-
-      <h2 className="mb-4">My Reports</h2>
-
-      {reportList.length === 0 ? (
-        <div className="alert alert-info">
-          You have not submitted any reports yet.
-        </div>
-      ) : (
-        <Row>
-          {reportList.map((report) => (
-            <Col md={6} lg={4} key={report.id}>
-              <div className="card shadow-sm mb-4 h-100">
-                {report.image && (
-                  <img
-                    src={
-                      report.image.startsWith("http")
-                        ? report.image
-                        : `${baseUrl}/uploads/${report.image}`
-                    }
-                    alt={report.issue_name}
-                    className="card-img-top"
-                    style={{
-                      height: "220px",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h4 className="card-title">
-                      {report.issue_name}
-                    </h4>
-
-                    <span
-                      className={`badge ${getStatusClass(
-                        report.status
-                      )}`}
-                    >
-                      {report.status}
-                    </span>
-                  </div>
-
-                  <p className="mb-2">
-                    <strong>Report ID:</strong> {report.id}
-                  </p>
-
-                  <p className="mb-2">
-                    <strong>Category:</strong> {report.category}
-                  </p>
-
-                  <p className="mb-2">
-                    <strong>Location:</strong> {report.location}
-                  </p>
-
-                  <p className="mb-2">
-                    <strong>Ward:</strong> {report.ward}
-                  </p>
-
-                  <p className="mb-2">
-                    <strong>Department:</strong>{" "}
-                    {report.department}
-                  </p>
-
-                  <p className="mb-2">
-                    <strong>Flag:</strong>{" "}
-                    <span
-                      className={
-                        report.flag === "YES"
-                          ? "text-danger fw-bold"
-                          : "text-success"
-                      }
-                    >
-                      {report.flag}
-                    </span>
-                  </p>
-
-                  {report.created_at && (
-                    <p className="text-muted small">
-                      Submitted:{" "}
-                      {new Date(
-                        report.created_at
-                      ).toLocaleString()}
-                    </p>
-                  )}
-                </div>
-
-                <div className="card-footer bg-white">
-                  <div className="d-flex justify-content-between">
-                    <span>
-                      {report.latitude},{" "}
-                      {report.longitude}
-                    </span>
-
-                    {report.workerid && (
-                      <span className="text-success">
-                        Worker Assigned
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      )}
     </div>
   );
 }
