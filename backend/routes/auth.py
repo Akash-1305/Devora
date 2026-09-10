@@ -6,25 +6,23 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @auth_bp.post('/register')
 def register():
-    dta = request.get_json() or {}
+    data = request.get_json() or {}
     name = (data.get('name') or '').strip()
     password = data.get('password') or ''
     if not name or not password:
-        return jsonify({'error':'Name and password are required.'}), 400
-        last = User.query.order_by(User.created_at.desc()).first()
-        next_no = 1
-        if last and last.userid.startswith('U'):
-            try: next_no = int(last.userid[1:]) + 1
-            except ValueError: pass
+        return jsonify({'error': 'Name and password are required.'}), 400
+    last = User.query.order_by(User.created_at.desc()).first()
+    next_no = 1
+    if last and last.userid.startswith('U'):
+        try: next_no = int(last.userid[1:]) + 1
+        except ValueError: pass
+    userid = f'U{next_no:04d}'
+    while User.query.get(userid):
+        next_no += 1
         userid = f'U{next_no:04d}'
-        while User.query.get(userid):
-            next_no += 1
-            userid = f'U{next_no:04d}'
-
-        user = User(userid = userid, name = name, password = password)
-        db.session.add(user); db.session.commit()
-        return jsonify({'message':'Registration Successful.', 'userid': userid}), 201
-        
+    user = User(userid=userid, name=name, password=password)
+    db.session.add(user); db.session.commit()
+    return jsonify({'message': 'Registration successful.', 'userid': userid}), 201
 @auth_bp.post('/login')
 def login():
     data = request.get_json() or {}
