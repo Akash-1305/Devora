@@ -1,12 +1,9 @@
 *{
     margin:0;
     padding: 0;
-    background-color: rgb(186, 186, 247);
-    text-align: right;
 }
 
 form{
-    background-color: red;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,4 +11,17 @@ form{
     min-height: 100vh;
     width: 50%;
     height: 50%;
+}
+
+label{
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 50px;
+}
+
+input{
+    padding: 10px;
+    font-size: 20px;
+    margin-top: 20px;
+    border-radius: 50px;
 }
