@@ -1,0 +1,15 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+nav{
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    color: red;
+}
+
+Link{
+    text-decoration: none;
+}
