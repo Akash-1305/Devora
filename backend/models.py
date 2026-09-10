@@ -6,6 +6,7 @@ class User(db.Model):
     userid = db.Column(db.String(20), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    mobileno = db.Column(db.String(100), nullable(False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     reports = db.relationship('Report', backref='user', lazy=True)
 
@@ -24,6 +25,7 @@ class Admin(db.Model):
     id = db.Column(db.String(20), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     designation = db.Column(db.String(50), nullable=False)
+    mobileno = db.Column(db.String(100), nullable(False)
     password = db.Column(db.String(100), nullable=False)
 
 class Report(db.Model):
