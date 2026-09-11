@@ -19,11 +19,11 @@ export default function UserHeader() {
     <div>
       <Navbar bg="dark" data-bs-theme="dark" className="shadow">
         <Container fluid>
-          <Navbar.Brand as={Link} to={"/userdashboard"}>
+          <Navbar.Brand as={Link} to={"/user"}>
             Jeevan Seva
           </Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to={"/userdashboard"}>
+            <Nav.Link as={Link} to={"/user"}>
               Home
             </Nav.Link>
             <Nav.Link as={Link} to="myreports">

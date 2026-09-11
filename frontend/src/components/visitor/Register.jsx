@@ -41,12 +41,11 @@ export default function Registration() {
   }
 
   return (
-    <div className="regbg mt-8 d-flex align-items-center justify-content-center">
+    <div className="regbg min-height-100vh d-flex align-items-center justify-content-center">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-sm-10 col-md-7 col-lg-5">
-            <div className="bg-white p-4 p-md-5 rounded-3 shadow">
-              
+            <div className="bg-white p-4 p-md-5 rounded-3 shadow">  
               <h2 className="text-center mb-4">
                 Registration Form
               </h2>
@@ -134,7 +133,7 @@ export default function Registration() {
                 <p className="text-center mt-3 mb-0">
                   Already a member?{" "}
                   <Link
-                    to="/login"
+                    to="/"
                     className="text-decoration-none"
                   >
                     Login

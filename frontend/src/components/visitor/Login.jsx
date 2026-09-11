@@ -38,7 +38,7 @@ const Login = () => {
   };
 
   return (
-    <div className="loginbg mt-10">
+    <div className="loginbg min-height-100vh d-flex align-items-center justify-content-center">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-sm-10 col-md-6 col-lg-4">
@@ -126,6 +126,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };
