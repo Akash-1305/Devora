@@ -7,31 +7,94 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 @auth_bp.post('/register')
 def register():
     data = request.get_json() or {}
+
     name = (data.get('name') or '').strip()
-    mobileno = (data.get('mobileno').strip()
+    phone = (data.get('phone') or '').strip()
     password = data.get('password') or ''
-    if not name or not password:
-        return jsonify({'error': 'Name and password are required.'}), 400
+
+    if not name or not phone or not password:
+        return jsonify({
+            'error': 'Name, phone number and password are required.'
+        }), 400
+
+    # Basic phone validation
+    if not phone.isdigit() or len(phone) != 10:
+        return jsonify({
+            'error': 'Enter a valid 10-digit phone number.'
+        }), 400
+
+    # Phone number must be unique
+    if User.query.filter_by(phone=phone).first():
+        return jsonify({
+            'error': 'This phone number is already registered.'
+        }), 409
+
+    # Internal user ID generation
     last = User.query.order_by(User.created_at.desc()).first()
+
     next_no = 1
+
     if last and last.userid.startswith('U'):
-        try: next_no = int(last.userid[1:]) + 1
-        except ValueError: pass
+        try:
+            next_no = int(last.userid[1:]) + 1
+        except ValueError:
+            pass
+
     userid = f'U{next_no:04d}'
+
     while User.query.get(userid):
         next_no += 1
         userid = f'U{next_no:04d}'
-    user = User(userid=userid, name=name, password=password)
-    db.session.add(user); db.session.commit()
-    return jsonify({'message': 'Registration successful.', 'userid': userid}), 201
+
+    user = User(
+        userid=userid,
+        name=name,
+        phone=phone,
+        password=password
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Registration successful.',
+        'name': user.name,
+        'phone': user.phone
+    }), 201
+
 @auth_bp.post('/login')
 def login():
     data = request.get_json() or {}
-    user = User.query.filter_by(userid = data.get('userid'), password = data.get('password')).first()
-    if not user:
-        return jsonify({'error':'Invalid user ID or password.'}), 401
-    return jsonify({'role':'user', 'userid':user.userid, 'name':user.name})
 
+    phone = (data.get('phone') or '').strip()
+    password = data.get('password') or ''
+
+    if not phone or not password:
+        return jsonify({
+            'error': 'Phone number and password are required.'
+        }), 400
+
+    user = User.query.filter_by(
+        phone=phone,
+        password=password
+    ).first()
+
+    if not user:
+        return jsonify({
+            'error': 'Invalid phone number or password.'
+        }), 401
+
+    return jsonify({
+        'role': 'user',
+
+        # Keep internally because rest of project currently uses it
+        'userid': user.userid,
+
+        'name': user.name,
+        'phone': user.phone
+    })
+
+    
 @auth_bp.post('/worker-login')
 def worker_login():
     data = request.get_json() or {}
