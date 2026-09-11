@@ -1,4 +1,4 @@
-from datatime import datetime
+from datetime import datetime
 from database import db 
 from models import Worker, Report
 
@@ -24,5 +24,5 @@ def assign_pending_reports(department):
         if not worker:
             break
         assigned += 1
-    db.section.commit()
+    db.session.commit()
     return assigned
