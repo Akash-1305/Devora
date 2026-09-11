@@ -4,6 +4,7 @@ from models import User, Worker, Admin
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
+
 @auth_bp.post('/register')
 def register():
     data = request.get_json() or {}
@@ -17,19 +18,16 @@ def register():
             'error': 'Name, phone number and password are required.'
         }), 400
 
-    # Basic phone validation
     if not phone.isdigit() or len(phone) != 10:
         return jsonify({
             'error': 'Enter a valid 10-digit phone number.'
         }), 400
 
-    # Phone number must be unique
     if User.query.filter_by(phone=phone).first():
         return jsonify({
             'error': 'This phone number is already registered.'
         }), 409
 
-    # Internal user ID generation
     last = User.query.order_by(User.created_at.desc()).first()
 
     next_no = 1
@@ -58,9 +56,11 @@ def register():
 
     return jsonify({
         'message': 'Registration successful.',
+        'userid': user.userid,
         'name': user.name,
         'phone': user.phone
     }), 201
+
 
 @auth_bp.post('/login')
 def login():
@@ -86,28 +86,67 @@ def login():
 
     return jsonify({
         'role': 'user',
-
-        # Keep internally because rest of project currently uses it
         'userid': user.userid,
-
         'name': user.name,
         'phone': user.phone
     })
 
-    
+
+@auth_bp.get('/user/<userid>')
+def get_user(userid):
+    user = User.query.filter_by(userid=userid).first()
+
+    if not user:
+        return jsonify({
+            'error': 'User not found.'
+        }), 404
+
+    return jsonify({
+        'userid': user.userid,
+        'name': user.name,
+        'phone': user.phone
+    })
+
+
 @auth_bp.post('/worker-login')
 def worker_login():
     data = request.get_json() or {}
-    worker = Worker.query.filter_by(workerid = data.get('workerid'), password = data.get('password')).first()
+
+    worker = Worker.query.filter_by(
+        workerid=data.get('workerid'),
+        password=data.get('password')
+    ).first()
+
     if not worker:
-        return jsonify ({'error':'Invalid worker ID or password.'}), 401
-    return jsonify({'role':'worker', 'worker_id': worker.workerid, 'department':worker.department, 'rating':worker.rating})
+        return jsonify({
+            'error': 'Invalid worker ID or password.'
+        }), 401
+
+    return jsonify({
+        'role': 'worker',
+        'worker_id': worker.workerid,
+        'department': worker.department,
+        'rating': worker.rating
+    })
+
 
 @auth_bp.post('/admin-login')
 def admin_login():
     data = request.get_json() or {}
-    admin = Admin.query.filter_by(id = data.get('id'), password = data.get('password')).first()
-    if not admin:
-        return jsonify({'error':'Invalid admin ID or password.'}), 401
-    return jsonify({'role':'admin', 'id':admin.id, 'name': admin.name, 'designation':admin.designation})
 
+    admin = Admin.query.filter_by(
+        id=data.get('id'),
+        password=data.get('password')
+    ).first()
+
+    if not admin:
+        return jsonify({
+            'error': 'Invalid admin ID or password.'
+        }), 401
+
+    return jsonify({
+        'role': 'admin',
+        'id': admin.id,
+        'name': admin.name,
+        'designation': admin.designation
+    })
